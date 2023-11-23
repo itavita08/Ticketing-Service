@@ -18,6 +18,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
+
     // 유저정보를 이용해 중복 확인 후 회원가입 진행
     @Transactional
     public User join(String userName, String password, UserRole role) {
@@ -30,7 +31,9 @@ public class UserService {
         return User.fromEntity(userEntity);
     }
 
-    public boolean login(String userName, String password) {
+    // 유저정보를 이용해 회원가입한 유저인지 확인 로그인
+    @Transactional(readOnly = true)
+    public User login(String userName, String password) {
         User user = userRepository.findByUserName(userName).map(User::fromEntity).orElseThrow(
                 () -> new TicketingApplicationException(ErrorCode.USER_NOT_FOUND, userName));
 
@@ -38,6 +41,6 @@ public class UserService {
             throw new TicketingApplicationException(ErrorCode.INVALID_PASSWORD);
         }
 
-        return true;
+        return user;
     }
 }
