@@ -30,7 +30,7 @@ public class UserController {
     @PostMapping("/login")
     public Response<UserLoginResponse> login(@RequestBody UserLoginRequest request){
         User user = userService.login(request.getUserName(), request.getPassword());
-
+        
         return Response.success(UserLoginResponse.fromUser(user));
     }
 }

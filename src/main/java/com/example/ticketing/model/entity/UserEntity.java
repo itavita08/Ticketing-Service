@@ -2,9 +2,7 @@ package com.example.ticketing.model.entity;
 
 import com.example.ticketing.model.UserRole;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Where;
 
 import java.sql.Timestamp;
@@ -17,6 +15,8 @@ import java.time.Instant;
 })
 @Where(clause = "deleted_at is NULL")
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class UserEntity {
 
