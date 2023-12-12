@@ -9,6 +9,7 @@ import com.example.ticketing.model.entity.ReservationEntity;
 import com.example.ticketing.model.entity.UserEntity;
 import com.example.ticketing.repository.ProductRepository;
 import com.example.ticketing.repository.ReservationRepository;
+import com.example.ticketing.repository.StadiumRepository;
 import com.example.ticketing.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class ReservationService {
     private final ProductRepository productRepository;
     private final ReservationRepository reservationRepository;
     private final UserRepository userRepository;
+    private final StadiumRepository stadiumRepository;
 
     // 현재 예매 가능한 상품 리스트 조회
     @Transactional(readOnly = true)
@@ -32,13 +34,19 @@ public class ReservationService {
                 .map(Product::fromEntity).toList();
     }
 
+    @Transactional(readOnly = true)
+    public UserEntity loadUser(String userName){
+
+        return userRepository.findByUserName(userName).orElseThrow(() ->
+                new TicketingApplicationException(ErrorCode.USER_NOT_FOUND));
+    }
+
     // 예매하기
     @Transactional
     public Reservation reserve(String userName, Integer productId){
 
         ProductEntity productEntity = soldOut(productId);
-        UserEntity userEntity = userRepository.findByUserName(userName).orElseThrow(() ->
-            new TicketingApplicationException(ErrorCode.USER_NOT_FOUND));
+        UserEntity userEntity = loadUser(userName);
 
         duplicate(userEntity, productEntity);
 
@@ -46,6 +54,7 @@ public class ReservationService {
                                                         .user(userEntity)
                                                         .product(productEntity)
                                                         .build());
+        stadiumRepository.updateRemain(productId);
 
         return Reservation.fromEntity(reservationEntity);
     }
@@ -56,9 +65,8 @@ public class ReservationService {
 
         ProductEntity productEntity = productRepository.findByProductId(productId)
                 .orElseThrow(() -> new TicketingApplicationException(ErrorCode.PRODUCT_NOT_FOUND));
-        long n = reservationRepository.countByProduct(productEntity);
 
-        if(n >= productEntity.getStadium().getCapacity()){
+        if(productEntity.getStadium().getRemain() == 0){
             throw new TicketingApplicationException(ErrorCode.SOLD_OUT);
         }
         return productEntity;
