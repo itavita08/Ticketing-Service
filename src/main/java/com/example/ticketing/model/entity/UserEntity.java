@@ -11,7 +11,8 @@ import java.time.Instant;
 @Getter
 @Setter
 @Table(name = "user", indexes = {
-        @Index(name = "idx_user_id", columnList = "id")
+        @Index(name = "idx_user_id", columnList = "id"),
+        @Index(name = "idx__user_name", columnList = "user_name")
 })
 @Where(clause = "deleted_at is NULL")
 @Builder
