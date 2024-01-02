@@ -8,9 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "stadium", indexes = {
-        @Index(name = "idx_stadium_id", columnList = "id")
-})
+@Table(name = "stadium")
 public class StadiumEntity {
 
     @Id
@@ -25,9 +23,5 @@ public class StadiumEntity {
 
     @Column(name = "capacity")
     private Integer capacity;
-
-    @Column(name = "remain")
-    private Integer remain;
-
 
 }

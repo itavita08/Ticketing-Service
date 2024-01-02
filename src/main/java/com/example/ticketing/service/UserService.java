@@ -43,4 +43,11 @@ public class UserService {
 
         return user;
     }
+
+    @Transactional(readOnly = true)
+    public UserEntity loadUser(String userName){
+        return userRepository.findByUserName(userName).orElseThrow(() ->
+                new TicketingApplicationException(ErrorCode.USER_NOT_FOUND));
+    }
+
 }
