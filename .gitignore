@@ -199,7 +199,7 @@ src/main/resources/application.yaml
 # Edit at https://www.toptal.com/developers/gitignore?templates=gradle
 
 ### Gradle ###
-.gradle
+.gradle/**
 **/build/
 !src/**/build/
 !.gradle/workflows
