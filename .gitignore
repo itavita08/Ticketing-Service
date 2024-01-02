@@ -202,6 +202,7 @@ src/main/resources/application.yaml
 .gradle
 **/build/
 !src/**/build/
+!.gradle/workflows
 
 # Ignore Gradle GUI config
 gradle-app.setting
