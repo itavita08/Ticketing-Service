@@ -21,6 +21,7 @@ public class Product {
     private LocalDate endDate;
     private String viewingAge;
     private String stadiumName;
+    private Integer leftTicket;
     private Integer price;
 
     public static Product fromEntity(ProductEntity entity){
@@ -31,6 +32,7 @@ public class Product {
                 .endDate(entity.getEndDate())
                 .viewingAge(entity.getViewingAge().getMessage())
                 .stadiumName(entity.getStadium().getStadiumName())
+                .leftTicket(entity.getLeftTicket())
                 .price(entity.getPrice())
                 .build();
     }
