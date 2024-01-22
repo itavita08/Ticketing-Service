@@ -40,14 +40,14 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-#      - name: Set .yml for main
-#        run: |
-#          cd ./src/main
-#          mkdir -p resources
-#          cd ./resources
-#          touch ./application.yaml
-#          echo "${{ secrets.APPLICATION }}" >> ./application.yaml
-#        shell: bash
+      - name: Set .yml for main
+        run: |
+          cd ./src/main
+          mkdir -p resources
+          cd ./resources
+          touch ./application.yaml
+          echo "${{ secrets.APPLICATION }}" >> ./application.yaml
+        shell: bash
 
       - name: Build with Gradle
         run: ./gradlew clean build --exclude-task test

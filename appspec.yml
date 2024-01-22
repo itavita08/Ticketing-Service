@@ -1,17 +1,14 @@
 version: 0.0
 os: linux
-
 file:
   - source: `/`
     destination: /home/ubuntu/app
     overwrite: yes
-
 permissions:
   - object: /
     pattern: "**"
     owner: ubuntu
     group: ubuntu
-
 hooks:
   AfterInstall:
     - location: scripts/stop.sh
