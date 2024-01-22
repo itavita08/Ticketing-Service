@@ -13,6 +13,16 @@ on:
   pull_request:
     branches: [ "main" ]
 
+env:
+  AWS_REGION: ap-northeast-2
+  S3_BUCKET_NAME: ticketing-s3
+  CODE_DEPLOY_APPLICATION_NAME: ticketing-codedeploy
+  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: ticketing-deployment-group
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
 permissions:
   contents: read
 
@@ -23,22 +33,60 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Set up MySQL
-        uses: mirromutth/mysql-action@v1.1
-        with:
-          host port: 3306
-          container port: 3306
-          mysql database: 'ticketing'
-          mysql user: ${{ secrets.DB_USERNAME }}
-          mysql password: ${{ secrets.DB_PASSWORD }}
+      - name: Set .yml for main
+        run: |
+          # main 설정 파일 디렉토리로 이동
+          cd ./src/main/resources
+          touch ./application.yaml
+          echo "${{ secrets.APPLICATION }}" >> ./application.yaml
+        shell: bash
 
       - name: Build with Gradle
-        uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
+        run: ./gradlew clean build --exclude-task test
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3.0.0
         with:
-          arguments: build -x test
+          username: ${{ env.DOCKER_USERNAME }}
+          password: ${{ env.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker Image
+        uses: docker/build-push-action@v5.1.0
+        with:
+          context: .
+          push: true
+          tags: ${{ env.DOCKER_USERNAME }}/ticketing
+
+      - name: Zip project files
+        run: zip -r ./$GITHUB_SHA.zip .
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Upload to S3
+        run: aws s3 cp --region ${{ env.AWS_REGION }} ./$GITHUB_SHA.zip s3://${{ env.S3_BUCKET_NAME }}/
+
+      - name: Deploy to AWS EC2 from S3
+        run: |
+          aws deploy create-deployment \
+            --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
+            --deployment-config-name CodeDeployDefault.AllAtOnce \
+            --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
+            --s3-location bucket=$S3_BUCKET_NAME,key=$GITHUB_SHA.zip,bundleType=zip
