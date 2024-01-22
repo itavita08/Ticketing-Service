@@ -70,6 +70,10 @@ jobs:
           context: .
           push: true
           tags: ${{ env.DOCKER_USERNAME }}/ticketing
+          platforms: |
+            linux/amd64
+            linux/arm64
+            linux/amd/v7
 
       - name: Zip project files
         run: zip -r ./$GITHUB_SHA.zip .
