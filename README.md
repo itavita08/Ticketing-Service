@@ -39,7 +39,7 @@
 
     <img src="https://img.shields.io/badge/IntelliJ-6A5FBB?style=flat&logo=&logoColor=white"> <img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white"> <img src="https://img.shields.io/badge/Postman-FF6C37?style=flat&logo=postman&logoColor=white"> <img src="https://img.shields.io/badge/Gitkraken-179287?style=flat&logo=gitkraken&logoColor=white">
 
-**URL**
+🌐 **URL**
 
 Git : https://github.com/itavita08/Ticketing-Service
 
