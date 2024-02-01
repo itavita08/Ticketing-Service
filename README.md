@@ -31,9 +31,10 @@
 
     <img src="https://img.shields.io/badge/GitHub Actions-2088FF?style=flat&logo=githubactions&logoColor=white"> <img src="https://img.shields.io/badge/AWS CodeDeploy-76D04B?style=flat&logo=&logoColor=white"> <img src="https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white">
    
-- 🖥️ Monitoring   
+- 🖥️ Monitoring / Test       
 
-    <img src="https://img.shields.io/badge/Pinpoint-02A8EF?style=flat&logo=&logoColor=white">
+    <img src="https://img.shields.io/badge/Pinpoint-02A8EF?style=flat&logo=&logoColor=white"> <img src="https://img.shields.io/badge/nGrinder-FF9900?style=flat&logo=&logoColor=white">   
+   
    
 - ⚒️ Tool
 
